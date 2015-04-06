@@ -1,6 +1,6 @@
 default:
     suites:
         application:
-            contexts: [ PhpZone\ApplicationContext ]
+            contexts: [ PhpZone\Behat\ApplicationContext, PhpZone\Behat\FilesystemContext ]
     formatters:
         pretty: true

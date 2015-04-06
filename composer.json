@@ -11,17 +11,20 @@
     ],
 
     "require": {
-        "php":             ">=5.3",
-        "symfony/console": "~2.3",
-        "symfony/process": "~2.3",
-        "symfony/yaml":    "~2.3"
+        "php":                          ">=5.3",
+        "symfony/console":              "~2.3",
+        "symfony/process":              "~2.3",
+        "symfony/yaml":                 "~2.3",
+        "symfony/dependency-injection": "~2.3"
     },
 
     "require-dev": {
-        "behat/behat":     "~3.0",
-        "phpspec/phpspec": "~2.2",
-        "squizlabs/php_codesniffer": "~2.0",
-        "jakubzapletal/php_codesniffer-rules": "~0.1"
+        "behat/behat":                         "~3.0",
+        "phpspec/phpspec":                     "~2.2",
+        "squizlabs/php_codesniffer":           "~2.0",
+        "jakubzapletal/php_codesniffer-rules": "~0.1",
+        "bossa/phpspec2-expect":               "~1.0",
+        "symfony/filesystem":                  "~2.3"
     },
 
     "autoload": {
@@ -32,7 +35,7 @@
 
     "autoload-dev": {
         "psr-4": {
-            "PhpZone\\": "features/bootstrap"
+            "PhpZone\\Behat\\": "features/bootstrap"
         }
     },
 
