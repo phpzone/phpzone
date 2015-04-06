@@ -57,6 +57,12 @@ class Application extends BaseApplication
         if (is_array($config)) {
             foreach ($config as $parameterName => $parameterValue) {
                 $this->container->setParameter($parameterName, $parameterValue);
+
+                if ($parameterName === 'extensions') {
+                    foreach ($parameterValue as $extensionName => $extensionConfig) {
+                        $this->container->setParameter($extensionName, $extensionConfig);
+                    }
+                }
             }
         }
     }
