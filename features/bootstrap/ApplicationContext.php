@@ -5,7 +5,6 @@ namespace PhpZone\Behat;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use PhpZone\PhpZone\Application;
-use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
 /**
@@ -15,9 +14,6 @@ class ApplicationContext implements Context, SnippetAcceptingContext
 {
     /** @var Application */
     private $application;
-
-    /** @var StreamOutput */
-    private $output;
 
     /** @var ApplicationTester */
     private $tester;
