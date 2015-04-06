@@ -4,6 +4,7 @@ namespace PhpZone\PhpZone;
 
 use PhpZone\PhpZone\Extension\Extension;
 use Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -53,8 +54,10 @@ class Application extends BaseApplication
 
         $config = Yaml::parse(file_get_contents($path));
 
-        foreach ($config as $parameterName => $parameterValue) {
-            $this->container->setParameter($parameterName, $parameterValue);
+        if (is_array($config)) {
+            foreach ($config as $parameterName => $parameterValue) {
+                $this->container->setParameter($parameterName, $parameterValue);
+            }
         }
     }
 
@@ -70,7 +73,7 @@ class Application extends BaseApplication
 
             if (!$extension instanceof Extension) {
                 throw new \RuntimeException(sprintf(
-                    'Defined extension "%s" is not instance of "%s"',
+                    'Defined extension "%s" is not an instance of "%s"',
                     $extension,
                     'PhpZone\PhpZone\Extension\Extension'
                 ));
@@ -80,12 +83,26 @@ class Application extends BaseApplication
         }
     }
 
+    /**
+     * @throws \RuntimeException
+     */
     private function registerCommands()
     {
         $taggedServices = $this->container->findTaggedServiceIds('command');
 
         foreach ($taggedServices as $serviceId => $tags) {
-            $this->add($this->container->get($serviceId));
+            $command = $this->container->get($serviceId);
+
+            if (!$command instanceof Command) {
+                throw new \RuntimeException(sprintf(
+                    'Defined service "%s% of class "%s% is not an instance of "%s%"',
+                    $serviceId,
+                    get_class($command),
+                    'Symfony\Component\Console\Command\Command'
+                ));
+            }
+
+            $this->add($command);
         }
     }
 }
