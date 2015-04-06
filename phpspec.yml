@@ -1,0 +1,7 @@
+suites:
+    main:
+        namespace: PhpZone\PhpZone
+        psr4_prefix: PhpZone\PhpZone
+        src_path: src/
+
+formatter.name: pretty

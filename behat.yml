@@ -1,0 +1,6 @@
+default:
+    suites:
+        application:
+            contexts: [ PhpZone\ApplicationContext ]
+    formatters:
+        pretty: true
