@@ -40,5 +40,5 @@
 
     "minimum-stability": "alpha",
 
-    "bin": ["bin/"]
+    "bin": ["bin/phpzone"]
 }
