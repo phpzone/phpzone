@@ -7,7 +7,8 @@ Feature: Registering a command by an extension
     Given there is a config file with:
     """
     extensions:
-        - PhpZone\PhpZone\Example\ExampleExtension1
+        PhpZone\PhpZone\Example\ExampleExtension1: ~
+
     """
       And there is a class in the "src/Example/ExampleExtension1.php" with:
       """

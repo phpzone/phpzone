@@ -68,7 +68,7 @@ class Application extends BaseApplication
     {
         $extensions = $this->container->getParameter('extensions');
 
-        foreach ($extensions as $extensionClassName) {
+        foreach ($extensions as $extensionClassName => $extensionOptions) {
             $extension = new $extensionClassName;
 
             if (!$extension instanceof Extension) {
