@@ -75,13 +75,11 @@ class Application extends BaseApplication
     {
         $config = $this->parseConfigurationFile($input);
 
-        if (is_array($config)) {
-            foreach ($config as $parameterName => $parameterValue) {
-                $this->container->setParameter($parameterName, $parameterValue);
+        foreach ($config as $parameterName => $parameterValue) {
+            $this->container->setParameter($parameterName, $parameterValue);
 
-                if ($parameterName === 'extensions' && is_array($parameterValue)) {
-                    $this->setParametersForExtensions($parameterValue);
-                }
+            if ($parameterName === 'extensions' && is_array($parameterValue)) {
+                $this->setParametersForExtensions($parameterValue);
             }
         }
     }
