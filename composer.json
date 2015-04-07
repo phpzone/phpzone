@@ -19,8 +19,8 @@
 
     "require-dev": {
         "behat/behat":                         "~3.0",
-        "phpspec/phpspec":                     "~2.2",
-        "squizlabs/php_codesniffer":           "~2.0",
+        "phpspec/phpspec":                     "~2.2@beta",
+        "squizlabs/php_codesniffer":           "~2.3",
         "jakubzapletal/php_codesniffer-rules": "~0.1",
         "bossa/phpspec2-expect":               "~1.0",
         "symfony/filesystem":                  "~2.3"
@@ -38,7 +38,9 @@
         }
     },
 
-    "minimum-stability": "alpha",
+    "bin": ["bin/phpzone"],
 
-    "bin": ["bin/phpzone"]
+    "config": {
+        "bin-dir": "bin/"
+    }
 }

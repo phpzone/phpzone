@@ -5,10 +5,10 @@ php:
 
 install:
     - composer self-update
-    - composer install
+    - composer update --prefer-lowest
 
 script:
-    - php -d xdebug.max_nesting_level=255 vendor/bin/behat
-    - vendor/bin/phpspec run
-    - vendor/bin/phpcs -p --colors --standard=PSR2 src/ features/bootstrap/
-    - vendor/bin/phpcs -p --colors --standard=vendor/jakubzapletal/php_codesniffer-rules/psr2-without-camel-case-method-name.xml spec/
+    - php -d xdebug.max_nesting_level=255 bin/behat
+    - bin/phpspec run
+    - bin/phpcs -p --colors --standard=PSR2 src/ features/bootstrap/
+    - bin/phpcs -p --colors --standard=vendor/jakubzapletal/php_codesniffer-rules/psr2-without-camel-case-method-name.xml spec/
