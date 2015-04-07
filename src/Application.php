@@ -5,7 +5,9 @@ namespace PhpZone\PhpZone;
 use PhpZone\PhpZone\Extension\Extension;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Yaml\Yaml;
@@ -27,7 +29,7 @@ class Application extends BaseApplication
     {
         $this->setContainer();
 
-        $this->loadConfigurationFile();
+        $this->loadConfigurationFile($input);
 
         $this->loadExtensions();
 
@@ -42,14 +44,40 @@ class Application extends BaseApplication
     }
 
     /**
+     * @return InputDefinition An InputDefinition instance
+     */
+    protected function getDefaultInputDefinition()
+    {
+        $definition = parent::getDefaultInputDefinition();
+        $options = $definition->getOptions();
+
+        $options['config'] = new InputOption(
+            'config',
+            'c',
+            InputOption::VALUE_REQUIRED,
+            'Specify a custom location for the configuration file'
+        );
+
+        $definition->setOptions($options);
+
+        return $definition;
+    }
+
+    /**
+     * @param InputInterface $input
+     *
      * @throws \RuntimeException
      */
-    private function loadConfigurationFile()
+    private function loadConfigurationFile(InputInterface $input)
     {
         $path = 'phpzone.yml';
 
+        if ($input->hasParameterOption(array('--config', '-c'))) {
+            $path = $input->getParameterOption(array('--config', '-c'));
+        }
+
         if (!file_exists($path)) {
-            throw new \RuntimeException(sprintf('Configuration file "%s%" not found', $path));
+            throw new \RuntimeException(sprintf('Configuration file "%s" not found', $path));
         }
 
         $config = Yaml::parse(file_get_contents($path));
@@ -58,12 +86,17 @@ class Application extends BaseApplication
             foreach ($config as $parameterName => $parameterValue) {
                 $this->container->setParameter($parameterName, $parameterValue);
 
-                if ($parameterName === 'extensions') {
-                    foreach ($parameterValue as $extensionName => $extensionConfig) {
-                        $this->container->setParameter($extensionName, $extensionConfig);
-                    }
+                if ($parameterName === 'extensions' && is_array($parameterValue)) {
+                    $this->setParametersForExtensions($parameterValue);
                 }
             }
+        }
+    }
+
+    private function setParametersForExtensions(array $extensions)
+    {
+        foreach ($extensions as $extensionName => $extensionConfig) {
+            $this->container->setParameter($extensionName, $extensionConfig);
         }
     }
 
@@ -101,7 +134,7 @@ class Application extends BaseApplication
 
             if (!$command instanceof Command) {
                 throw new \RuntimeException(sprintf(
-                    'Defined service "%s% of class "%s% is not an instance of "%s%"',
+                    'Defined service "%s% of class "%s" is not an instance of "%s"',
                     $serviceId,
                     get_class($command),
                     'Symfony\Component\Console\Command\Command'

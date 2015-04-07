@@ -37,10 +37,30 @@ class ApplicationContext implements Context, SnippetAcceptingContext
 
     /**
      * @When I run phpzone
+     * @When I run phpzone with the :option option
      */
-    public function iRunPhpzone()
+    public function iRunPhpzoneWithTheOption($option = null)
     {
-        $this->tester->run(array());
+        $arguments = array ();
+
+        $this->addOptionToArguments($option, $arguments);
+
+        $this->tester->run($arguments);
+    }
+
+    /**
+     * @param string $option
+     * @param array $arguments
+     */
+    private function addOptionToArguments($option, array &$arguments)
+    {
+        if ($option) {
+            if (preg_match('/(?P<option>[a-z-]+)=(?P<value>[a-z.\/]+)/', $option, $matches)) {
+                $arguments[$matches['option']] = $matches['value'];
+            } else {
+                $arguments['--' . trim($option, '"')] = true;
+            }
+        }
     }
 
     /**

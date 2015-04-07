@@ -57,6 +57,14 @@ class FilesystemContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @Given there is a file :file with:
+     */
+    public function thereIsAFileWith($file, PyStringNode $content)
+    {
+        $this->createFile($file, $content);
+    }
+
+    /**
      * @Given there is a class in the :file with:
      */
     public function thereIsAClassInTheWith($file, PyStringNode $content)
