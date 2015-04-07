@@ -2,6 +2,9 @@
 
 namespace PhpZone\PhpZone;
 
+use PhpZone\PhpZone\Exception\Command\InvalidCommandException;
+use PhpZone\PhpZone\Exception\Config\ConfigNotFoundException;
+use PhpZone\PhpZone\Exception\Extension\InvalidExtensionException;
 use PhpZone\PhpZone\Extension\Extension;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
@@ -66,7 +69,7 @@ class Application extends BaseApplication
     /**
      * @param InputInterface $input
      *
-     * @throws \RuntimeException
+     * @throws ConfigNotFoundException
      */
     private function loadConfigurationFile(InputInterface $input)
     {
@@ -88,7 +91,7 @@ class Application extends BaseApplication
      *
      * @return array
      *
-     * @throws \RuntimeException
+     * @throws ConfigNotFoundException
      */
     private function parseConfigurationFile(InputInterface $input)
     {
@@ -99,7 +102,7 @@ class Application extends BaseApplication
         }
 
         if (!file_exists($path)) {
-            throw new \RuntimeException(sprintf('Configuration file "%s" not found', $path));
+            throw new ConfigNotFoundException(sprintf('Configuration file "%s" not found', $path));
         }
 
         $config = Yaml::parse(file_get_contents($path));
@@ -115,17 +118,24 @@ class Application extends BaseApplication
     }
 
     /**
-     * @throws \RuntimeException
+     * @throws InvalidExtensionException
      */
     private function loadExtensions()
     {
         $extensions = $this->container->getParameter('extensions');
 
         foreach ($extensions as $extensionClassName => $extensionOptions) {
+            if (!class_exists($extensionClassName)) {
+                throw new InvalidExtensionException(sprintf(
+                    'Defined extension "%s" does not exist',
+                    $extensionClassName
+                ));
+            }
+
             $extension = new $extensionClassName;
 
             if (!$extension instanceof Extension) {
-                throw new \RuntimeException(sprintf(
+                throw new InvalidExtensionException(sprintf(
                     'Defined extension "%s" is not an instance of "%s"',
                     $extension,
                     'PhpZone\PhpZone\Extension\Extension'
@@ -137,7 +147,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @throws \RuntimeException
+     * @throws InvalidCommandException
      */
     private function registerCommands()
     {
@@ -147,7 +157,7 @@ class Application extends BaseApplication
             $command = $this->container->get($serviceId);
 
             if (!$command instanceof Command) {
-                throw new \RuntimeException(sprintf(
+                throw new InvalidCommandException(sprintf(
                     'Defined service "%s% of class "%s" is not an instance of "%s"',
                     $serviceId,
                     get_class($command),
