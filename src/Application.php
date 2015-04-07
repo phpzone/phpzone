@@ -70,6 +70,28 @@ class Application extends BaseApplication
      */
     private function loadConfigurationFile(InputInterface $input)
     {
+        $config = $this->parseConfigurationFile($input);
+
+        if (is_array($config)) {
+            foreach ($config as $parameterName => $parameterValue) {
+                $this->container->setParameter($parameterName, $parameterValue);
+
+                if ($parameterName === 'extensions' && is_array($parameterValue)) {
+                    $this->setParametersForExtensions($parameterValue);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param InputInterface $input
+     *
+     * @return array
+     *
+     * @throws \RuntimeException
+     */
+    private function parseConfigurationFile(InputInterface $input)
+    {
         $path = 'phpzone.yml';
 
         if ($input->hasParameterOption(array('--config', '-c'))) {
@@ -82,15 +104,7 @@ class Application extends BaseApplication
 
         $config = Yaml::parse(file_get_contents($path));
 
-        if (is_array($config)) {
-            foreach ($config as $parameterName => $parameterValue) {
-                $this->container->setParameter($parameterName, $parameterValue);
-
-                if ($parameterName === 'extensions' && is_array($parameterValue)) {
-                    $this->setParametersForExtensions($parameterValue);
-                }
-            }
-        }
+        return $config;
     }
 
     private function setParametersForExtensions(array $extensions)
