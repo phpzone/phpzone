@@ -24,26 +24,10 @@ Feature: Registering a command by an extension
       {
           public function load(ContainerBuilder $container)
           {
-              $definition = new Definition('\PhpZone\PhpZone\Example\ExampleCommand1');
+              $definition = new Definition('Symfony\Component\Console\Command\Command');
+              $definition->setArguments(array('example:command:1'));
               $definition->addTag('command');
               $container->setDefinition('example.command_1', $definition);
-          }
-      }
-
-      """
-    And there is a class in the "src/Example/ExampleCommand1.php" with:
-      """
-      <?php
-
-      namespace PhpZone\PhpZone\Example;
-
-      use Symfony\Component\Console\Command\Command;
-
-      class ExampleCommand1 extends Command
-      {
-          public function __construct()
-          {
-              parent::__construct('example:command:1');
           }
       }
 
