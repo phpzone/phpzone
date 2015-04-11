@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
+### Changed
+- Registration of extensions via Symfony Dependency Injection Extension system
 
 ## 0.1.0 - 2015-04-07
 ### Added

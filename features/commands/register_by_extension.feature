@@ -7,22 +7,22 @@ Feature: Registering a command by an extension
     Given there is a config file with:
       """
       extensions:
-          PhpZone\PhpZone\Example\ExampleExtension1: ~
+          PhpZone\PhpZone\Example\Example1Extension: ~
 
       """
-    And there is a class in the "src/Example/ExampleExtension1.php" with:
+    And there is a class in the "src/Example/Example1Extension.php" with:
       """
       <?php
 
       namespace PhpZone\PhpZone\Example;
 
-      use PhpZone\PhpZone\Extension\Extension;
+      use PhpZone\PhpZone\Extension\AbstractExtension;
       use Symfony\Component\DependencyInjection\ContainerBuilder;
       use Symfony\Component\DependencyInjection\Definition;
 
-      class ExampleExtension1 implements Extension
+      class Example1Extension extends AbstractExtension
       {
-          public function load(ContainerBuilder $container)
+          public function load(array $config, ContainerBuilder $container)
           {
               $definition = new Definition('Symfony\Component\Console\Command\Command');
               $definition->setArguments(array('example:command:1'));

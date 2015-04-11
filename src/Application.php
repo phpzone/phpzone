@@ -5,7 +5,6 @@ namespace PhpZone\PhpZone;
 use PhpZone\PhpZone\Exception\Command\InvalidCommandException;
 use PhpZone\PhpZone\Exception\Config\ConfigNotFoundException;
 use PhpZone\PhpZone\Exception\Extension\InvalidExtensionException;
-use PhpZone\PhpZone\Extension\Extension;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -13,6 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\Yaml\Yaml;
 
 class Application extends BaseApplication
@@ -30,20 +30,17 @@ class Application extends BaseApplication
 
     public function doRun(InputInterface $input, OutputInterface $output)
     {
-        $this->setContainer();
+        $this->container = new ContainerBuilder();
 
         $this->loadConfigurationFile($input);
 
-        $this->loadExtensions();
+        $this->registerExtensions();
+
+        $this->container->compile();
 
         $this->registerCommands();
 
         parent::doRun($input, $output);
-    }
-
-    private function setContainer()
-    {
-        $this->container = new ContainerBuilder();
     }
 
     /**
@@ -77,10 +74,6 @@ class Application extends BaseApplication
 
         foreach ($config as $parameterName => $parameterValue) {
             $this->container->setParameter($parameterName, $parameterValue);
-
-            if ($parameterName === 'extensions' && is_array($parameterValue)) {
-                $this->setParametersForExtensions($parameterValue);
-            }
         }
     }
 
@@ -108,17 +101,10 @@ class Application extends BaseApplication
         return $config;
     }
 
-    private function setParametersForExtensions(array $extensions)
-    {
-        foreach ($extensions as $extensionName => $extensionConfig) {
-            $this->container->setParameter($extensionName, $extensionConfig);
-        }
-    }
-
     /**
      * @throws InvalidExtensionException
      */
-    private function loadExtensions()
+    private function registerExtensions()
     {
         $extensions = $this->container->getParameter('extensions');
 
@@ -132,15 +118,23 @@ class Application extends BaseApplication
 
             $extension = new $extensionClassName;
 
-            if (!$extension instanceof Extension) {
+            if (!$extension instanceof ExtensionInterface) {
                 throw new InvalidExtensionException(sprintf(
                     'Defined extension "%s" is not an instance of "%s"',
-                    $extension,
-                    'PhpZone\PhpZone\Extension\Extension'
+                    get_class($extension),
+                    'Symfony\Component\DependencyInjection\Extension\ExtensionInterface'
                 ));
             }
 
-            $extension->load($this->container);
+            $this->container->registerExtension($extension);
+
+            if (is_array($extensionOptions)) {
+                $config = $extensionOptions;
+            } else {
+                $config = array($extensionOptions);
+            }
+
+            $this->container->loadFromExtension($extensionClassName, $config);
         }
     }
 

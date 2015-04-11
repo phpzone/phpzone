@@ -7,22 +7,22 @@ Feature: Running with custom config path
     Given there is a file "test/phpzone.yml" with:
       """
       extensions:
-          PhpZone\PhpZone\Example\ExampleExtension2: ~
+          PhpZone\PhpZone\Example\Example2Extension: ~
 
       """
-    And there is a class in the "src/Example/ExampleExtension2.php" with:
+    And there is a class in the "src/Example/Example2Extension.php" with:
       """
       <?php
 
       namespace PhpZone\PhpZone\Example;
 
-      use PhpZone\PhpZone\Extension\Extension;
+      use PhpZone\PhpZone\Extension\AbstractExtension;
       use Symfony\Component\DependencyInjection\ContainerBuilder;
       use Symfony\Component\DependencyInjection\Definition;
 
-      class ExampleExtension2 implements Extension
+      class Example2Extension extends AbstractExtension
       {
-          public function load(ContainerBuilder $container)
+          public function load(array $config, ContainerBuilder $container)
           {
               $definition = new Definition('Symfony\Component\Console\Command\Command');
               $definition->setArguments(array('example:command:2'));
