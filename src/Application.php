@@ -4,8 +4,11 @@ namespace PhpZone\PhpZone;
 
 use PhpZone\PhpZone\Exception\Command\InvalidCommandException;
 use PhpZone\PhpZone\Exception\Config\ConfigNotFoundException;
+use PhpZone\PhpZone\Exception\Config\InvalidFileTypeException;
 use PhpZone\PhpZone\Exception\Config\InvalidFormatException;
 use PhpZone\PhpZone\Exception\Extension\InvalidExtensionException;
+use PhpZone\PhpZone\Loader\YamlFileLoader;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -15,7 +18,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
-use Symfony\Component\Yaml\Yaml;
 
 class Application extends BaseApplication
 {
@@ -70,7 +72,7 @@ class Application extends BaseApplication
     /**
      * @param InputInterface $input
      *
-     * @throws ConfigNotFoundException
+     * @throws InvalidFormatException
      */
     private function loadConfigurationFile(InputInterface $input)
     {
@@ -90,9 +92,10 @@ class Application extends BaseApplication
     /**
      * @param InputInterface $input
      *
-     * @return array
+     * @return array|null
      *
      * @throws ConfigNotFoundException
+     * @throws InvalidFileTypeException
      */
     private function parseConfigurationFile(InputInterface $input)
     {
@@ -102,11 +105,9 @@ class Application extends BaseApplication
             $path = $input->getParameterOption(array('--config', '-c'));
         }
 
-        if (!file_exists($path)) {
-            throw new ConfigNotFoundException(sprintf('Configuration file "%s" not found', $path), 1);
-        }
+        $yamlFileLoader = new YamlFileLoader(new FileLocator(getcwd()));
 
-        $config = Yaml::parse(file_get_contents($path));
+        $config = $yamlFileLoader->load($path);
 
         return $config;
     }

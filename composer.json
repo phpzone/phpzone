@@ -15,7 +15,8 @@
         "symfony/console":              "~2.3",
         "symfony/yaml":                 "~2.3",
         "symfony/dependency-injection": "~2.3",
-        "symfony/debug":                "~2.3"
+        "symfony/debug":                "~2.3",
+        "symfony/config":               "~2.3"
     },
 
     "require-dev": {
@@ -24,7 +25,8 @@
         "squizlabs/php_codesniffer":           "~2.3",
         "jakubzapletal/php_codesniffer-rules": "~0.1",
         "bossa/phpspec2-expect":               "~1.0",
-        "symfony/filesystem":                  "~2.3"
+        "symfony/filesystem":                  "~2.3",
+        "phpunit/phpunit":                     "~4.6"
     },
 
     "autoload": {
@@ -35,7 +37,8 @@
 
     "autoload-dev": {
         "psr-4": {
-            "PhpZone\\Behat\\": "features/bootstrap"
+            "PhpZone\\Behat\\": "features/bootstrap",
+            "PhpZone\\PhpZone\\Integration\\": "integrations"
         }
     },
 

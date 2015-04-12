@@ -1,0 +1,12 @@
+<phpunit
+    convertErrorsToExceptions="true"
+    colors="true"
+>
+
+    <testsuites>
+        <testsuite>
+            <directory>integrations/</directory>
+        </testsuite>
+    </testsuites>
+
+</phpunit>
