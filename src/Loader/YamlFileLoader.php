@@ -45,7 +45,7 @@ class YamlFileLoader
 
         $content = $this->loadFile($path);
 
-        if ($content === null) {
+        if (!is_array($content)) {
             return null;
         }
 

@@ -4,6 +4,7 @@ namespace PhpZone\Behat;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
+use Behat\Gherkin\Node\PyStringNode;
 use PhpZone\PhpZone\Application;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
@@ -67,6 +68,16 @@ class ApplicationContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @When I run phpzone with :command
+     */
+    public function iRunPhpzoneWith($command = null)
+    {
+        $arguments = array ($command);
+
+        $this->exitCode = $this->tester->run($arguments);
+    }
+
+    /**
      * @Then I should have :commandName command
      */
     public function iShouldHaveCommand($commandName)
@@ -87,6 +98,22 @@ class ApplicationContext implements Context, SnippetAcceptingContext
      */
     public function iShouldSeeAnError()
     {
-        expect($this->exitCode)->shouldBeLike(1);
+        expect($this->exitCode > 0)->toBe(true);
+    }
+
+    /**
+     * @Then I should see:
+     */
+    public function iShouldSee(PyStringNode $content)
+    {
+        expect($this->tester->getDisplay())->shouldBeLike($content->getRaw());
+    }
+
+    /**
+     * @Then I should have an exit code :exitCode
+     */
+    public function iShouldHaveAnExitCode($exitCode)
+    {
+        expect($this->exitCode)->shouldBeLike($exitCode);
     }
 }

@@ -1,0 +1,9 @@
+services:
+
+    event_dispatcher:
+        alias: symfony.event_dispatcher.container_aware
+
+    symfony.event_dispatcher.container_aware:
+        class: Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher
+        arguments:
+            - @service_container

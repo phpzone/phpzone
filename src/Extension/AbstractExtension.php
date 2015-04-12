@@ -29,7 +29,7 @@ abstract class AbstractExtension implements ExtensionInterface
      */
     public function getNamespace()
     {
-        return false;
+        return 'http://example.org/schema/dic/';
     }
 
     /**
@@ -41,7 +41,7 @@ abstract class AbstractExtension implements ExtensionInterface
      */
     public function getXsdValidationBasePath()
     {
-        return false;
+        return '';
     }
 
     /**

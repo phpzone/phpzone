@@ -2,6 +2,7 @@
 
 namespace PhpZone\PhpZone;
 
+use PhpZone\PhpZone\DependencyInjection\RegisterListenersPass;
 use PhpZone\PhpZone\Exception\Command\InvalidCommandException;
 use PhpZone\PhpZone\Exception\Config\ConfigNotFoundException;
 use PhpZone\PhpZone\Exception\Config\InvalidFileTypeException;
@@ -18,6 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader as ContainerYamlFileLoader;
 
 class Application extends BaseApplication
 {
@@ -30,23 +32,6 @@ class Application extends BaseApplication
     public function __construct($version)
     {
         parent::__construct('PhpZone', $version);
-    }
-
-    public function doRun(InputInterface $input, OutputInterface $output)
-    {
-        Debug::enable();
-
-        $this->container = new ContainerBuilder();
-
-        $this->loadConfigurationFile($input);
-
-        $this->registerExtensions();
-
-        $this->container->compile();
-
-        $this->registerCommands();
-
-        return parent::doRun($input, $output);
     }
 
     /**
@@ -67,6 +52,36 @@ class Application extends BaseApplication
         $definition->setOptions($options);
 
         return $definition;
+    }
+
+    public function doRun(InputInterface $input, OutputInterface $output)
+    {
+        Debug::enable();
+
+        $this->container = new ContainerBuilder();
+
+        $this->setDefaultContainerConfiguration();
+
+        $this->loadConfigurationFile($input);
+
+        $this->registerExtensions();
+
+        $this->container->compile();
+
+        $this->setDispatcher($this->container->get('event_dispatcher'));
+
+        $this->registerCommands();
+
+        return parent::doRun($input, $output);
+    }
+
+    private function setDefaultContainerConfiguration()
+    {
+        $loader = new ContainerYamlFileLoader($this->container, new FileLocator(__DIR__ . '/../config'));
+        $loader->load('services.yml');
+
+        $listenerPass = new RegisterListenersPass();
+        $this->container->addCompilerPass($listenerPass);
     }
 
     /**
