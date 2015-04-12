@@ -65,6 +65,13 @@ class FilesystemContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @Given there is no config file
+     */
+    public function thereIsNoConfigFile()
+    {
+    }
+
+    /**
      * @Given there is a class in the :file with:
      */
     public function thereIsAClassInTheWith($file, PyStringNode $content)

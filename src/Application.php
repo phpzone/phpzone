@@ -4,6 +4,7 @@ namespace PhpZone\PhpZone;
 
 use PhpZone\PhpZone\Exception\Command\InvalidCommandException;
 use PhpZone\PhpZone\Exception\Config\ConfigNotFoundException;
+use PhpZone\PhpZone\Exception\Config\InvalidFormatException;
 use PhpZone\PhpZone\Exception\Extension\InvalidExtensionException;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
@@ -11,6 +12,7 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Debug\Debug;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\Yaml\Yaml;
@@ -30,6 +32,8 @@ class Application extends BaseApplication
 
     public function doRun(InputInterface $input, OutputInterface $output)
     {
+        Debug::enable();
+
         $this->container = new ContainerBuilder();
 
         $this->loadConfigurationFile($input);
@@ -40,7 +44,7 @@ class Application extends BaseApplication
 
         $this->registerCommands();
 
-        parent::doRun($input, $output);
+        return parent::doRun($input, $output);
     }
 
     /**
@@ -72,6 +76,12 @@ class Application extends BaseApplication
     {
         $config = $this->parseConfigurationFile($input);
 
+        if (empty($config)) {
+            throw new InvalidFormatException('Configuration file is empty', 1);
+        } elseif (!is_array($config)) {
+            throw new InvalidFormatException('Configuration file doesn\'t contain correct data', 1);
+        }
+
         foreach ($config as $parameterName => $parameterValue) {
             $this->container->setParameter($parameterName, $parameterValue);
         }
@@ -93,7 +103,7 @@ class Application extends BaseApplication
         }
 
         if (!file_exists($path)) {
-            throw new ConfigNotFoundException(sprintf('Configuration file "%s" not found', $path));
+            throw new ConfigNotFoundException(sprintf('Configuration file "%s" not found', $path), 1);
         }
 
         $config = Yaml::parse(file_get_contents($path));
@@ -106,24 +116,43 @@ class Application extends BaseApplication
      */
     private function registerExtensions()
     {
+        if (!$this->container->hasParameter('extensions')) {
+            throw new InvalidFormatException('Configuration file has to contain the "extensions" option', 1);
+        }
+
         $extensions = $this->container->getParameter('extensions');
+
+        if (empty($extensions)) {
+            throw new InvalidFormatException(
+                'Configuration file has to contain some data in the "extensions" option',
+                1
+            );
+        } elseif (!is_array($extensions)) {
+            throw new InvalidFormatException(
+                'Configuration file doesn`t contain correct format of data in the "extensions" option',
+                1
+            );
+        }
 
         foreach ($extensions as $extensionClassName => $extensionOptions) {
             if (!class_exists($extensionClassName)) {
-                throw new InvalidExtensionException(sprintf(
-                    'Defined extension "%s" does not exist',
-                    $extensionClassName
-                ));
+                throw new InvalidExtensionException(
+                    sprintf('Defined extension "%s" doesn`t exist', $extensionClassName),
+                    1
+                );
             }
 
             $extension = new $extensionClassName;
 
             if (!$extension instanceof ExtensionInterface) {
-                throw new InvalidExtensionException(sprintf(
-                    'Defined extension "%s" is not an instance of "%s"',
-                    get_class($extension),
-                    'Symfony\Component\DependencyInjection\Extension\ExtensionInterface'
-                ));
+                throw new InvalidExtensionException(
+                    sprintf(
+                        'Defined extension "%s" isn`t an instance of "%s"',
+                        get_class($extension),
+                        'Symfony\Component\DependencyInjection\Extension\ExtensionInterface'
+                    ),
+                    1
+                );
             }
 
             $this->container->registerExtension($extension);
@@ -149,12 +178,15 @@ class Application extends BaseApplication
             $command = $this->container->get($serviceId);
 
             if (!$command instanceof Command) {
-                throw new InvalidCommandException(sprintf(
-                    'Defined service "%s% of class "%s" is not an instance of "%s"',
-                    $serviceId,
-                    get_class($command),
-                    'Symfony\Component\Console\Command\Command'
-                ));
+                throw new InvalidCommandException(
+                    sprintf(
+                        'Defined service "%s" of class "%s" isn`t an instance of "%s"',
+                        $serviceId,
+                        get_class($command),
+                        'Symfony\Component\Console\Command\Command'
+                    ),
+                    1
+                );
             }
 
             $this->add($command);

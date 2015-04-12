@@ -18,6 +18,9 @@ class ApplicationContext implements Context, SnippetAcceptingContext
     /** @var ApplicationTester */
     private $tester;
 
+    /** @var int */
+    private $exitCode;
+
     /**
      * @beforeScenario
      */
@@ -45,7 +48,7 @@ class ApplicationContext implements Context, SnippetAcceptingContext
 
         $this->addOptionToArguments($option, $arguments);
 
-        $this->tester->run($arguments);
+        $this->exitCode = $this->tester->run($arguments);
     }
 
     /**
@@ -69,5 +72,21 @@ class ApplicationContext implements Context, SnippetAcceptingContext
     public function iShouldHaveCommand($commandName)
     {
         expect($this->application->has($commandName))->toBe(true);
+    }
+
+    /**
+     * @Then I should not see any error
+     */
+    public function iShouldNotSeeAnyError()
+    {
+        expect($this->exitCode)->shouldBeLike(0);
+    }
+
+    /**
+     * @Then I should see an error
+     */
+    public function iShouldSeeAnError()
+    {
+        expect($this->exitCode)->shouldBeLike(1);
     }
 }

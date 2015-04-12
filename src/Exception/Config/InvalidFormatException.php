@@ -2,7 +2,6 @@
 
 namespace PhpZone\PhpZone\Exception\Config;
 
-class ConfigNotFoundException extends \Exception
+class InvalidFormatException extends \Exception
 {
-
 }
