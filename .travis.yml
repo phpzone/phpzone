@@ -4,7 +4,14 @@ matrix:
     include:
         - php: 5.3
           env: DEPENDENCIES='lowest'
-        - php: 5.3.29
+        - php: 5.3
+        - php: 5.6
+        - php: 7.0
+        - php: hhvm
+    allow_failures:
+        - php: 7.0
+        - php: hhvm
+    fast_finish: true
 
 install:
     - composer self-update
@@ -13,7 +20,7 @@ install:
     - if [ "$DEPENDENCIES" == "lowest" ]; then composer update --prefer-lowest; fi;
 
 script:
-    - php -d xdebug.max_nesting_level=255 bin/behat -f progress
+    - bin/behat -f progress
     - bin/phpunit
     - bin/phpspec run -f progress
     - bin/phpcs -p --colors --standard=PSR2 src/ features/bootstrap/
