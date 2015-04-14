@@ -1,11 +1,16 @@
 language: php
 
-php:
-    - 5.3
+matrix:
+    include:
+        - php: 5.3
+          env: DEPENDENCIES='lowest'
+        - php: 5.3.29
 
 install:
     - composer self-update
     - composer update --prefer-lowest
+    - if [ "$DEPENDENCIES" != "lowest" ]; then composer update; fi;
+    - if [ "$DEPENDENCIES" == "lowest" ]; then composer update --prefer-lowest; fi;
 
 script:
     - php -d xdebug.max_nesting_level=255 bin/behat -f progress
