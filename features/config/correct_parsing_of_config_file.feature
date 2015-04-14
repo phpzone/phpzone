@@ -41,28 +41,12 @@ Feature: Correct parsing of config file
       """
       """
     When I run phpzone
-    Then I should see an error
+    Then I should not see any error
 
   Scenario: Running with a config file in wrong format
     Given there is a config file with:
       """
       wrong_format
-      """
-    When I run phpzone
-    Then I should see an error
-
-  Scenario: Running with a config file which does not contain the "extensions" option
-    Given there is a config file with:
-      """
-      some_option: some_value
-      """
-    When I run phpzone
-    Then I should see an error
-
-  Scenario: Running with a config file which contains the "extensions" option with null
-    Given there is a config file with:
-      """
-      extensions: ~
       """
     When I run phpzone
     Then I should see an error

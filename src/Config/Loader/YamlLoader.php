@@ -1,21 +1,33 @@
 <?php
 
-namespace PhpZone\PhpZone\Loader;
+namespace PhpZone\PhpZone\Config\Loader;
 
+use PhpZone\PhpZone\Config\Definition\Configuration;
 use PhpZone\PhpZone\Exception\Config\ConfigNotFoundException;
 use PhpZone\PhpZone\Exception\Config\InvalidFileTypeException;
 use PhpZone\PhpZone\Exception\Config\InvalidFormatException;
+use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Yaml\Yaml;
 
-class YamlFileLoader
+class YamlLoader
 {
     /** @var FileLocatorInterface */
     private $locator;
 
+    /** @var Configuration */
+    private $configuration;
+
+    /** @var Processor */
+    private $processor;
+
     public function __construct(FileLocatorInterface $locator)
     {
         $this->locator = $locator;
+
+        $this->configuration = new Configuration();
+        $this->processor = new Processor();
     }
 
     /**
@@ -45,13 +57,15 @@ class YamlFileLoader
 
         $content = $this->loadFile($path);
 
-        if (!is_array($content)) {
-            return null;
+        try {
+            $config = $this->processor->processConfiguration($this->configuration, array($content));
+        } catch (InvalidTypeException $e) {
+            throw new InvalidFormatException($e->getMessage(), 1);
         }
 
-        $this->parseImports($content, $path);
+        $this->parseImports($config, $path);
 
-        return $content;
+        return $config;
     }
 
     /**
@@ -75,43 +89,27 @@ class YamlFileLoader
     }
 
     /**
-     * @param array $content
+     * @param array $config
      * @param string $path
      *
      * @throws ConfigNotFoundException
      * @throws InvalidFileTypeException
      * @throws InvalidFormatException
      */
-    private function parseImports(&$content, $path)
+    private function parseImports(array &$config, $path)
     {
-        if (!empty($content['imports'])) {
-            $imports = $content['imports'];
+        $imports = $config['imports'];
 
-            if (!is_array($imports)) {
-                throw new InvalidFormatException(
-                    sprintf('Configuration file has to contain an array of resources in the "imports" option'),
-                    1
-                );
-            }
+        $baseDir = dirname($path);
 
-            $baseDir = dirname($path);
+        foreach ($imports as $import) {
+            $resource = $baseDir . '/' . ltrim($import['resource'], '/');
 
-            foreach ($imports as $import) {
-                if (empty($import['resource'])) {
-                    throw new InvalidFormatException(
-                        sprintf('Configuration file has to contain the "resource" option in the "imports" resources'),
-                        1
-                    );
-                }
+            $importedConfig = $this->load($resource);
 
-                $resource = $baseDir . '/' . ltrim($import['resource'], '/');
-
-                $importedContent = $this->load($resource);
-
-                $content = array_merge_recursive($content, $importedContent);
-            }
-
-            unset($content['imports']);
+            $config = array_merge_recursive($config, $importedConfig);
         }
+
+        unset($config['imports']);
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace PhpZone\PhpZone\Integration\Loader;
+namespace PhpZone\PhpZone\Integration\Config\Loader;
 
-use PhpZone\PhpZone\Loader\YamlFileLoader;
+use PhpZone\PhpZone\Config\Loader\YamlLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Filesystem\Filesystem;
 
-class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
+class YamlLoaderTest extends \PHPUnit_Framework_TestCase
 {
     /** @var Filesystem */
     private $filesystem;
@@ -14,8 +14,8 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
     /** @var string */
     private $workingDirectory;
 
-    /** @var YamlFileLoader */
-    private $yamlFileLoader;
+    /** @var YamlLoader */
+    private $yamlLoader;
 
     public function setUp()
     {
@@ -25,7 +25,7 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
         $this->filesystem->mkdir($this->workingDirectory);
         chdir($this->workingDirectory);
 
-        $this->yamlFileLoader = new YamlFileLoader(new FileLocator($this->workingDirectory));
+        $this->yamlLoader = new YamlLoader(new FileLocator($this->workingDirectory));
     }
 
     public function tearDown()
@@ -41,7 +41,7 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $testFile = 'yamlFile.yml';
 
-        $this->yamlFileLoader->load($testFile);
+        $this->yamlLoader->load($testFile);
     }
 
     public function test_it_should_parse_content_when_yaml_file_given()
@@ -53,9 +53,9 @@ extensions:
 EOF;
         $this->filesystem->dumpFile($testFile, $testFileContent);
 
-        expect($this->yamlFileLoader->load($testFile))->toBe(array(
+        expect($this->yamlLoader->load($testFile))->toBe(array(
             'extensions' => array(
-                'PhpZone\Exmaple' => null,
+                'PhpZone\Exmaple' => array(),
             ),
         ));
     }
@@ -69,7 +69,7 @@ EOF;
         $testFile = 'xmlFile.xml';
         $this->filesystem->dumpFile($testFile, '');
 
-        $this->yamlFileLoader->load($testFile);
+        $this->yamlLoader->load($testFile);
     }
 
     public function test_it_should_include_imported_resources_when_resources_for_import_given()
@@ -90,10 +90,10 @@ extensions:
 EOF;
         $this->filesystem->dumpFile($testImportedFile, $testImportedFileContent);
 
-        expect($this->yamlFileLoader->load($testFile))->toBe(array(
+        expect($this->yamlLoader->load($testFile))->toBe(array(
             'extensions' => array(
-                'PhpZone\Exmaple1' => null,
-                'PhpZone\Exmaple2' => null,
+                'PhpZone\Exmaple1' => array(),
+                'PhpZone\Exmaple2' => array(),
             ),
         ));
     }
@@ -102,34 +102,14 @@ EOF;
      * @expectedException \PhpZone\PhpZone\Exception\Config\InvalidFormatException
      * @expectedExceptionCode 1
      */
-    public function test_it_should_fail_when_imports_has_wrong_format()
+    public function test_it_should_fail_when_config_has_invalid_format()
     {
         $testFile = 'yamlFile.yml';
         $testFileContent = <<<EOF
 imports: string
-extensions:
-    PhpZone\Exmaple1: ~
 EOF;
         $this->filesystem->dumpFile($testFile, $testFileContent);
 
-        $this->yamlFileLoader->load($testFile);
-    }
-
-    /**
-     * @expectedException \PhpZone\PhpZone\Exception\Config\InvalidFormatException
-     * @expectedExceptionCode 1
-     */
-    public function test_it_should_fail_when_import_resource_has_no_option_resources()
-    {
-        $testFile = 'yamlFile.yml';
-        $testFileContent = <<<EOF
-imports:
-    - {}
-extensions:
-    PhpZone\Exmaple1: ~
-EOF;
-        $this->filesystem->dumpFile($testFile, $testFileContent);
-
-        $this->yamlFileLoader->load($testFile);
+        $this->yamlLoader->load($testFile);
     }
 }

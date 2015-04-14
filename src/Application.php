@@ -2,13 +2,13 @@
 
 namespace PhpZone\PhpZone;
 
+use PhpZone\PhpZone\Config\Loader\YamlLoader;
 use PhpZone\PhpZone\DependencyInjection\RegisterListenersPass;
 use PhpZone\PhpZone\Exception\Command\InvalidCommandException;
 use PhpZone\PhpZone\Exception\Config\ConfigNotFoundException;
 use PhpZone\PhpZone\Exception\Config\InvalidFileTypeException;
 use PhpZone\PhpZone\Exception\Config\InvalidFormatException;
 use PhpZone\PhpZone\Exception\Extension\InvalidExtensionException;
-use PhpZone\PhpZone\Loader\YamlFileLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
@@ -87,32 +87,11 @@ class Application extends BaseApplication
     /**
      * @param InputInterface $input
      *
+     * @throws ConfigNotFoundException
+     * @throws InvalidFileTypeException
      * @throws InvalidFormatException
      */
     private function loadConfigurationFile(InputInterface $input)
-    {
-        $config = $this->parseConfigurationFile($input);
-
-        if (empty($config)) {
-            throw new InvalidFormatException('Configuration file is empty', 1);
-        } elseif (!is_array($config)) {
-            throw new InvalidFormatException('Configuration file doesn\'t contain correct data', 1);
-        }
-
-        foreach ($config as $parameterName => $parameterValue) {
-            $this->container->setParameter($parameterName, $parameterValue);
-        }
-    }
-
-    /**
-     * @param InputInterface $input
-     *
-     * @return array|null
-     *
-     * @throws ConfigNotFoundException
-     * @throws InvalidFileTypeException
-     */
-    private function parseConfigurationFile(InputInterface $input)
     {
         $path = 'phpzone.yml';
 
@@ -120,11 +99,13 @@ class Application extends BaseApplication
             $path = $input->getParameterOption(array('--config', '-c'));
         }
 
-        $yamlFileLoader = new YamlFileLoader(new FileLocator(getcwd()));
+        $yamlLoader = new YamlLoader(new FileLocator(getcwd()));
 
-        $config = $yamlFileLoader->load($path);
+        $config = $yamlLoader->load($path);
 
-        return $config;
+        foreach ($config as $parameterName => $parameterValue) {
+            $this->container->setParameter($parameterName, $parameterValue);
+        }
     }
 
     /**
@@ -132,23 +113,7 @@ class Application extends BaseApplication
      */
     private function registerExtensions()
     {
-        if (!$this->container->hasParameter('extensions')) {
-            throw new InvalidFormatException('Configuration file has to contain the "extensions" option', 1);
-        }
-
         $extensions = $this->container->getParameter('extensions');
-
-        if (empty($extensions)) {
-            throw new InvalidFormatException(
-                'Configuration file has to contain some data in the "extensions" option',
-                1
-            );
-        } elseif (!is_array($extensions)) {
-            throw new InvalidFormatException(
-                'Configuration file doesn`t contain correct format of data in the "extensions" option',
-                1
-            );
-        }
 
         foreach ($extensions as $extensionClassName => $extensionOptions) {
             if (!class_exists($extensionClassName)) {
@@ -173,13 +138,7 @@ class Application extends BaseApplication
 
             $this->container->registerExtension($extension);
 
-            if (is_array($extensionOptions)) {
-                $config = $extensionOptions;
-            } else {
-                $config = array($extensionOptions);
-            }
-
-            $this->container->loadFromExtension($extensionClassName, $config);
+            $this->container->loadFromExtension($extensionClassName, $extensionOptions);
         }
     }
 
