@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 ### Added
+- Shell environment activated by the `--shell` option.
 - Automatic registration of services with the tag `event_subscriber` as an event subscriber.
 - Automatic registration of services with the tag `event_listener` as an event listener.
 - Implementation of [Symfony Event Dispatcher].

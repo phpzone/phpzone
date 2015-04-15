@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-define('PHPZONE_VERSION', '0.1.0');
+define('PHPZONE_VERSION', '0.2.x');
 
 if (is_file($autoload = getcwd() . '/vendor/autoload.php')) {
     require $autoload;

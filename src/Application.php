@@ -3,6 +3,7 @@
 namespace PhpZone\PhpZone;
 
 use PhpZone\PhpZone\Config\Loader\YamlLoader;
+use PhpZone\PhpZone\Console\Shell;
 use PhpZone\PhpZone\DependencyInjection\RegisterListenersPass;
 use PhpZone\PhpZone\Exception\Command\InvalidCommandException;
 use PhpZone\PhpZone\Exception\Config\ConfigNotFoundException;
@@ -49,6 +50,13 @@ class Application extends BaseApplication
             'Specify a custom location for the configuration file'
         );
 
+        $options['shell'] = new InputOption(
+            'shell',
+            's',
+            InputOption::VALUE_NONE,
+            'Launch the shell environment'
+        );
+
         $definition->setOptions($options);
 
         return $definition;
@@ -71,6 +79,13 @@ class Application extends BaseApplication
         $this->setDispatcher($this->container->get('event_dispatcher'));
 
         $this->registerCommands();
+
+        if (true === $input->hasParameterOption(array('--shell', '-s'))) {
+            $shell = new Shell($this);
+            $shell->run();
+
+            return 0;
+        }
 
         return parent::doRun($input, $output);
     }
