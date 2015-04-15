@@ -4,4 +4,4 @@ suites:
         psr4_prefix: PhpZone\PhpZone
         src_path: src/
 
-formatter.name: pretty
+formatter.name: progress

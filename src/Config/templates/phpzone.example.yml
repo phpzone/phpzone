@@ -1,0 +1,7 @@
+#imports:
+#    - { resource: relative\path\to\another\config\file.yml }
+
+#extensions:
+#    Namespace\FooExtension: ~
+#    Namespace\BarExtension:
+#        some_key: some_value

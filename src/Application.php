@@ -13,6 +13,7 @@ use PhpZone\PhpZone\Exception\Extension\InvalidExtensionException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -42,6 +43,13 @@ class Application extends BaseApplication
     {
         $definition = parent::getDefaultInputDefinition();
         $options = $definition->getOptions();
+
+        $options['init'] = new InputOption(
+            'init',
+            null,
+            InputOption::VALUE_NONE,
+            'Initialize the configuration file <comment>(phpzone.yml)</comment>'
+        );
 
         $options['config'] = new InputOption(
             'config',
@@ -85,6 +93,11 @@ class Application extends BaseApplication
             $shell->run();
 
             return 0;
+        }
+
+        if (true === $input->hasParameterOption(array('--init'))) {
+            $this->add($this->container->get('phpzone.phpzone.console.command.init'));
+            $input = new ArrayInput(array('command' => 'phpzone:init'));
         }
 
         return parent::doRun($input, $output);

@@ -3,4 +3,4 @@ default:
         application:
             contexts: [ PhpZone\Behat\ApplicationContext, PhpZone\Behat\FilesystemContext ]
     formatters:
-        pretty: true
+        progress: true

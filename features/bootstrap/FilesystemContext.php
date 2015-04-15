@@ -96,4 +96,13 @@ class FilesystemContext implements Context, SnippetAcceptingContext
     {
         require_once $file;
     }
+
+    /**
+     * @Then I should have a file :file with:
+     */
+    public function iShouldHaveAFileWith($file, PyStringNode $content)
+    {
+        expect(file_exists($file))->toBe(true);
+        expect(file_get_contents($file))->toBe($content->getRaw());
+    }
 }

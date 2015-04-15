@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 ### Added
+- Command for automatic initialization of the config file called by the `--init` option.
 - Shell environment activated by the `--shell` option.
 - Automatic registration of services with the tag `event_subscriber` as an event subscriber.
 - Automatic registration of services with the tag `event_listener` as an event listener.
