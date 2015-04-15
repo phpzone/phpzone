@@ -31,10 +31,10 @@ Feature: Correct parsing of config file
     When I run phpzone
     Then I should not see any error
 
-  Scenario: Running with no config file
+  Scenario: Running with a not existing config file and without a custom location of the file
     Given there is no config file
     When I run phpzone
-    Then I should see an error
+    Then I should not see any error
 
   Scenario: Running with empty config file
     Given there is a config file with:

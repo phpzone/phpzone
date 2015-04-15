@@ -116,7 +116,15 @@ class Application extends BaseApplication
 
         $yamlLoader = new YamlLoader(new FileLocator(getcwd()));
 
-        $config = $yamlLoader->load($path);
+        try {
+            $config = $yamlLoader->load($path);
+        } catch (ConfigNotFoundException $e) {
+            if ($input->hasParameterOption(array('--config', '-c'))) {
+                throw $e;
+            } else {
+                $config = array();
+            }
+        }
 
         foreach ($config as $parameterName => $parameterValue) {
             $this->container->setParameter($parameterName, $parameterValue);
@@ -128,32 +136,34 @@ class Application extends BaseApplication
      */
     private function registerExtensions()
     {
-        $extensions = $this->container->getParameter('extensions');
+        if ($this->container->hasParameter('extensions')) {
+            $extensions = $this->container->getParameter('extensions');
 
-        foreach ($extensions as $extensionClassName => $extensionOptions) {
-            if (!class_exists($extensionClassName)) {
-                throw new InvalidExtensionException(
-                    sprintf('Defined extension "%s" doesn`t exist', $extensionClassName),
-                    1
-                );
+            foreach ($extensions as $extensionClassName => $extensionOptions) {
+                if (!class_exists($extensionClassName)) {
+                    throw new InvalidExtensionException(
+                        sprintf('Defined extension "%s" doesn`t exist', $extensionClassName),
+                        1
+                    );
+                }
+
+                $extension = new $extensionClassName;
+
+                if (!$extension instanceof ExtensionInterface) {
+                    throw new InvalidExtensionException(
+                        sprintf(
+                            'Defined extension "%s" isn`t an instance of "%s"',
+                            get_class($extension),
+                            'Symfony\Component\DependencyInjection\Extension\ExtensionInterface'
+                        ),
+                        1
+                    );
+                }
+
+                $this->container->registerExtension($extension);
+
+                $this->container->loadFromExtension($extensionClassName, $extensionOptions);
             }
-
-            $extension = new $extensionClassName;
-
-            if (!$extension instanceof ExtensionInterface) {
-                throw new InvalidExtensionException(
-                    sprintf(
-                        'Defined extension "%s" isn`t an instance of "%s"',
-                        get_class($extension),
-                        'Symfony\Component\DependencyInjection\Extension\ExtensionInterface'
-                    ),
-                    1
-                );
-            }
-
-            $this->container->registerExtension($extension);
-
-            $this->container->loadFromExtension($extensionClassName, $extensionOptions);
         }
     }
 

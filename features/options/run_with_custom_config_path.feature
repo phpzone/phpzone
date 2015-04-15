@@ -34,3 +34,8 @@ Feature: Running with custom config path
       """
     When I run phpzone with the "--config=test/phpzone.yml" option
     Then I should have "example:command:2" command
+
+  Scenario: Running with a not existing config file and with a custom location of the file
+    Given there is no config file
+    When I run phpzone with the "--config=test/phpzone.yml" option
+    Then I should see an error
