@@ -20,6 +20,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Debug\Debug;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\TaggedContainerInterface;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader as ContainerYamlFileLoader;
 
@@ -31,8 +32,10 @@ class Application extends BaseApplication
     /**
      * @param string $version
      */
-    public function __construct($version)
+    public function __construct($version, TaggedContainerInterface $container)
     {
+        $this->container = $container;
+
         parent::__construct('PhpZone', $version);
     }
 
@@ -102,8 +105,6 @@ class Application extends BaseApplication
     public function doRun(InputInterface $input, OutputInterface $output)
     {
         Debug::enable();
-
-        $this->container = new ContainerBuilder();
 
         $this->setDefaultContainerConfiguration();
 
@@ -233,5 +234,13 @@ class Application extends BaseApplication
 
             $this->add($command);
         }
+    }
+
+    /**
+     * @return TaggedContainerInterface
+     */
+    public function getContainer()
+    {
+        return $this->container;
     }
 }

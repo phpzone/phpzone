@@ -7,6 +7,7 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use PhpZone\PhpZone\Application;
 use Symfony\Component\Console\Tester\ApplicationTester;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Defines application features from the specific context.
@@ -32,7 +33,8 @@ class ApplicationContext implements Context, SnippetAcceptingContext
 
     private function setApplicationTest()
     {
-        $application = new Application('0.1.0');
+        $container = new ContainerBuilder();
+        $application = new Application('0.1.0', $container);
         $application->setAutoExit(false);
         $this->application = $application;
 

@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 exception handling.
 
 ### Changed
+- Instance of a service container is injected into the application and can be got.
 - Force ANSI color by the `--colors` options and no ANSI color by the `--no-colors` option.
 - Registration of extensions via [Symfony DependencyInjection Extension] system.
 

@@ -4,14 +4,15 @@ namespace spec\PhpZone\PhpZone;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\DependencyInjection\TaggedContainerInterface;
 
 class ApplicationSpec extends ObjectBehavior
 {
-    public function let()
+    public function let(TaggedContainerInterface $container)
     {
         $version = 'x.y.z';
 
-        $this->beConstructedWith($version);
+        $this->beConstructedWith($version, $container);
     }
 
     public function it_is_initializable()
@@ -32,5 +33,10 @@ class ApplicationSpec extends ObjectBehavior
     public function it_should_have_version()
     {
         $this->getVersion()->shouldBeLike('x.y.z');
+    }
+
+    public function it_should_return_container(TaggedContainerInterface $container)
+    {
+        $this->getContainer()->shouldBeLike($container);
     }
 }
