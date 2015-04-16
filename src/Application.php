@@ -44,6 +44,24 @@ class Application extends BaseApplication
         $definition = parent::getDefaultInputDefinition();
         $options = $definition->getOptions();
 
+        unset($options['ansi']);
+        unset($options['no-ansi']);
+
+        $options['colors'] = new InputOption(
+            'colors',
+            null,
+            InputOption::VALUE_NONE,
+            'Force ANSI color in the output, by default a color support is'
+            . ' guessed based on your platform and the output if not specified'
+        );
+
+        $options['no-colors'] = new InputOption(
+            'no-colors',
+            null,
+            InputOption::VALUE_NONE,
+            'Force no ANSI color in the output'
+        );
+
         $options['init'] = new InputOption(
             'init',
             null,
@@ -68,6 +86,17 @@ class Application extends BaseApplication
         $definition->setOptions($options);
 
         return $definition;
+    }
+
+    protected function configureIO(InputInterface $input, OutputInterface $output)
+    {
+        if (true === $input->hasParameterOption(array('--colors'))) {
+            $output->setDecorated(true);
+        } elseif (true === $input->hasParameterOption(array('--no-colors'))) {
+            $output->setDecorated(false);
+        }
+
+        parent::configureIO($input, $output);
     }
 
     public function doRun(InputInterface $input, OutputInterface $output)

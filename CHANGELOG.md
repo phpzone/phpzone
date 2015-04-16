@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 exception handling.
 
 ### Changed
+- Force ANSI color by the `--colors` options and no ANSI color by the `--no-colors` option.
 - Registration of extensions via [Symfony DependencyInjection Extension] system.
 
 ## 0.1.0 - 2015-04-07
