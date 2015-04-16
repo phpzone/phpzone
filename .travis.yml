@@ -14,8 +14,6 @@ matrix:
     fast_finish: true
 
 install:
-    - composer self-update
-    - composer update --prefer-lowest
     - if [ "$DEPENDENCIES" != "lowest" ]; then composer update; fi;
     - if [ "$DEPENDENCIES" == "lowest" ]; then composer update --prefer-lowest; fi;
 
