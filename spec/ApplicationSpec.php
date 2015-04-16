@@ -4,11 +4,11 @@ namespace spec\PhpZone\PhpZone;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Component\DependencyInjection\TaggedContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ApplicationSpec extends ObjectBehavior
 {
-    public function let(TaggedContainerInterface $container)
+    public function let(ContainerBuilder $container)
     {
         $version = 'x.y.z';
 
@@ -35,7 +35,7 @@ class ApplicationSpec extends ObjectBehavior
         $this->getVersion()->shouldBeLike('x.y.z');
     }
 
-    public function it_should_return_container(TaggedContainerInterface $container)
+    public function it_should_return_container(ContainerBuilder $container)
     {
         $this->getContainer()->shouldBeLike($container);
     }

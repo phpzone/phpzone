@@ -4,7 +4,7 @@ namespace PhpZone\PhpZone;
 
 use PhpZone\PhpZone\Config\Loader\YamlLoader;
 use PhpZone\PhpZone\Console\Shell;
-use PhpZone\PhpZone\DependencyInjection\RegisterListenersPass;
+use PhpZone\PhpZone\DependencyInjection\Compiler\RegisterListenersPass;
 use PhpZone\PhpZone\Exception\Command\InvalidCommandException;
 use PhpZone\PhpZone\Exception\Config\ConfigNotFoundException;
 use PhpZone\PhpZone\Exception\Config\InvalidFileTypeException;
@@ -18,11 +18,10 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Debug\Debug;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\TaggedContainerInterface;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader as ContainerYamlFileLoader;
+use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
 
 class Application extends BaseApplication
 {
@@ -32,9 +31,10 @@ class Application extends BaseApplication
     /**
      * @param string $version
      */
-    public function __construct($version, TaggedContainerInterface $container)
+    public function __construct($version, ContainerBuilder $container)
     {
         $this->container = $container;
+        $this->setDefaultContainerConfiguration();
 
         parent::__construct('PhpZone', $version);
     }
@@ -104,17 +104,16 @@ class Application extends BaseApplication
 
     public function doRun(InputInterface $input, OutputInterface $output)
     {
-        Debug::enable();
-
-        $this->setDefaultContainerConfiguration();
-
         $this->loadConfigurationFile($input);
 
         $this->registerExtensions();
 
         $this->container->compile();
 
-        $this->setDispatcher($this->container->get('event_dispatcher'));
+        $eventDispatcher = $this->container->get('event_dispatcher');
+        if ($eventDispatcher instanceof ContainerAwareEventDispatcher) {
+            $this->setDispatcher($eventDispatcher);
+        }
 
         $this->registerCommands();
 
@@ -237,7 +236,7 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return TaggedContainerInterface
+     * @return ContainerBuilder
      */
     public function getContainer()
     {

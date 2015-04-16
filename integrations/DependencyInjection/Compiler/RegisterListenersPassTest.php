@@ -5,9 +5,9 @@
  * but because of its absence in Symfony 2.3 it was copied here.
  */
 
-namespace PhpZone\PhpZone\Integration\DependencyInjection;
+namespace PhpZone\PhpZone\Integration\DependencyInjection\Compiler;
 
-use PhpZone\PhpZone\DependencyInjection\RegisterListenersPass;
+use PhpZone\PhpZone\DependencyInjection\Compiler\RegisterListenersPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class RegisterListenersPassTest extends \PHPUnit_Framework_TestCase
@@ -66,7 +66,7 @@ class RegisterListenersPassTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
         $definition->expects($this->atLeastOnce())
             ->method('getClass')
-            ->will($this->returnValue('PhpZone\PhpZone\Integration\DependencyInjection\SubscriberService'));
+            ->will($this->returnValue('PhpZone\PhpZone\Integration\DependencyInjection\Compiler\SubscriberService'));
 
         $builder = $this->getMock(
             'Symfony\Component\DependencyInjection\ContainerBuilder',
@@ -155,7 +155,7 @@ class RegisterListenersPassTest extends \PHPUnit_Framework_TestCase
 
         $container->setParameter(
             'subscriber.class',
-            'PhpZone\PhpZone\Integration\DependencyInjection\SubscriberService'
+            'PhpZone\PhpZone\Integration\DependencyInjection\Compiler\SubscriberService'
         );
         $container->register('foo', '%subscriber.class%')->addTag('event_subscriber', array());
         $container->register('event_dispatcher', 'stdClass');
@@ -169,7 +169,7 @@ class RegisterListenersPassTest extends \PHPUnit_Framework_TestCase
                 'addSubscriberService',
                 array(
                     'foo',
-                    'PhpZone\PhpZone\Integration\DependencyInjection\SubscriberService',
+                    'PhpZone\PhpZone\Integration\DependencyInjection\Compiler\SubscriberService',
                 ),
             ),
         );

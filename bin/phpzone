@@ -22,6 +22,8 @@ if (is_file($autoload = __DIR__ . '/../vendor/autoload.php')) {
     exit(1);
 }
 
+Symfony\Component\Debug\Debug::enable();
+
 $container = new Symfony\Component\DependencyInjection\ContainerBuilder();
-$application = new \PhpZone\PhpZone\Application(PHPZONE_VERSION, $container);
+$application = new PhpZone\PhpZone\Application(PHPZONE_VERSION, $container);
 $application->run();

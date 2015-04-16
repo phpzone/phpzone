@@ -5,7 +5,7 @@
  * but because of its absence in Symfony 2.3 it was copied here.
  */
 
-namespace PhpZone\PhpZone\DependencyInjection;
+namespace PhpZone\PhpZone\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;

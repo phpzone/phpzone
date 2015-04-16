@@ -5,7 +5,7 @@
  * but because of its absence in Symfony 2.3 it was copied here.
  */
 
-namespace PhpZone\PhpZone\Integration\DependencyInjection;
+namespace PhpZone\PhpZone\Integration\DependencyInjection\Compiler;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 

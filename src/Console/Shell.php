@@ -2,26 +2,16 @@
 
 namespace PhpZone\PhpZone\Console;
 
-use PhpZone\PhpZone\Application;
 use Symfony\Component\Console\Shell as BaseShell;
 
 class Shell extends BaseShell
 {
-    private $application;
-
-    public function __construct(Application $application)
-    {
-        $this->application = $application;
-
-        parent::__construct($application);
-    }
-
     /**
      * @return string
      */
     protected function getHeader()
     {
-        $version = $this->application->getVersion();
+        $version = $this->getApplication()->getVersion();
 
         return <<<EOF
 <options=bold>      ____  _          _____
@@ -48,7 +38,7 @@ EOF;
     {
         // using the formatter here is required when using readline
         return $this->getOutput()->getFormatter()->format(
-            '<fg=green;options=bold>' . $this->application->getName() . '</fg=green;options=bold> > '
+            '<fg=green;options=bold>' . $this->getApplication()->getName() . '</fg=green;options=bold> > '
         );
     }
 }
