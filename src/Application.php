@@ -104,24 +104,26 @@ class Application extends BaseApplication
 
     public function doRun(InputInterface $input, OutputInterface $output)
     {
-        $this->loadConfigurationFile($input);
+        if (!$this->container->isFrozen()) {
+            $this->loadConfigurationFile($input);
 
-        $this->registerExtensions();
+            $this->registerExtensions();
 
-        $this->container->compile();
+            $this->container->compile();
 
-        $eventDispatcher = $this->container->get('event_dispatcher');
-        if ($eventDispatcher instanceof ContainerAwareEventDispatcher) {
-            $this->setDispatcher($eventDispatcher);
-        }
+            $eventDispatcher = $this->container->get('event_dispatcher');
+            if ($eventDispatcher instanceof ContainerAwareEventDispatcher) {
+                $this->setDispatcher($eventDispatcher);
+            }
 
-        $this->registerCommands();
+            $this->registerCommands();
 
-        if (true === $input->hasParameterOption(array('--shell', '-s'))) {
-            $shell = new Shell($this);
-            $shell->run();
+            if (true === $input->hasParameterOption(array('--shell', '-s'))) {
+                $shell = new Shell($this);
+                $shell->run();
 
-            return 0;
+                return 0;
+            }
         }
 
         if (true === $input->hasParameterOption(array('--init'))) {
