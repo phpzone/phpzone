@@ -38,8 +38,8 @@ There is also provided an option for the custom path for the configuration file.
 Shell environment
 -----------------
 
-Shell environment provides interactive environment with fully support of history and autocomplete all commands.
-Very useful when there are defined more commands and developer often switches between them.
+Shell environment provides an interactive environment with full support of history and auto-complete commands.
+Very useful when there are more defined commands and the developer often switches between them.
 
 .. code-block:: bash
 

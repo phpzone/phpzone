@@ -9,7 +9,6 @@ PhpZone
     official-extensions
     creating-an-extension
 
-
 PhpZone is a generic tool for the easy creation of `YAML`_ configured console applications. Its primary purpose is to
 provide a centralized automation tool for developers to simplify development workflow.
 
@@ -23,7 +22,7 @@ provide a centralized automation tool for developers to simplify development wor
 Basic Usage
 -----------
 
-One example is more than hundreds words so let's go to show one.
+An example speaks a hundred words so let’s go through one.
 
 Create a ``phpzone.yml`` file in the root of a project:
 
@@ -47,7 +46,8 @@ defined sub-commands will be executed.
 
 .. important::
     The ``PhpZone\Shell\Shell`` extension is not a part of the ``phpzone/phpzone`` package, but an aside project
-    based on PhpZone. More info in a chapter dedicated to official extensions.
+    based on PhpZone. More info in a chapter dedicated to `official extensions`_.
 
 
 .. _YAML: http://symfony.com/doc/current/components/yaml/yaml_format.html
+.. _official extensions: official-extensions

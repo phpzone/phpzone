@@ -4,7 +4,7 @@ Getting Started
 Requirements
 ------------
 
-PhpZone required PHP 5.3 or higher.
+PhpZone requires PHP 5.3 or higher.
 
 Installation
 ------------
@@ -34,7 +34,7 @@ or add it manually into your ``composer.json``:
 Configuration file
 ------------------
 
-The configuration file ``phpzone.yml`` is alpha and omega of this tool and its format is `YAML`_.
+The configuration file ``phpzone.yml`` is the alpha and omega of this tool and its format is `YAML`_.
 
 Creating the configuration file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -64,7 +64,7 @@ There is also provided an option for the custom path. You can just basically use
 Definitions
 ^^^^^^^^^^^
 
-The file can contain non or each of following definitions:
+The file can contain none or each of the following definitions:
 
 ========== ======== ==================================================================
 imports    Optional Including another files.
@@ -87,7 +87,7 @@ One example rules them all:
             - value 2 of an array
 
 .. important::
-    Every extension has own configuration values and their structure depends on the specification of the extension.
+    Every extension has it's own configuration values and their structure depends on the specification of the extension.
     For more details follow instructions according the extension.
 
 .. _Composer: https://getcomposer.org
