@@ -1,6 +1,6 @@
 {
     "name":        "phpzone/phpzone",
-    "description": "A generic tool for the easy creation of YAML configured CLI applications",
+    "description": "A generic tool for the easy creation of YAML configured console applications",
     "type":        "library",
     "license":     "MIT",
     "authors":     [

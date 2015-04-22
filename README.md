@@ -8,4 +8,8 @@
 [![Total Downloads](https://poser.pugx.org/phpzone/phpzone/downloads.png)](https://packagist.org/packages/phpzone/phpzone)
 [![License](https://poser.pugx.org/phpzone/phpzone/license.png)](https://packagist.org/packages/phpzone/phpzone)
 
-A generic tool for the easy creation of YAML configured CLI applications
+A generic tool for the easy creation of YAML configured console applications.
+
+## Documentation
+
+Read the [PhpZone Documentation](http://www.phpzone.org) to learn more about PhpZone.
