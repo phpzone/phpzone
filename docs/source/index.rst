@@ -46,7 +46,7 @@ defined sub-commands will be executed.
 
 .. important::
     The ``PhpZone\Shell\Shell`` extension is not a part of the ``phpzone/phpzone`` package, but an aside project
-    based on PhpZone. More info in a chapter dedicated to `official extensions <official-extensions>`_.
+    based on PhpZone. More info in a chapter dedicated to `official extensions <official-extensions.html>`_.
 
 
 .. _YAML: http://symfony.com/doc/current/components/yaml/yaml_format.html
