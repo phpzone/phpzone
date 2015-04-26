@@ -3,13 +3,21 @@ PhpZone
 
 .. toctree::
     :hidden:
+    :caption: PhpZone
+    :numbered:
 
     getting-started
     basic-commands
     official-extensions
     creating-an-extension
+
+.. toctree::
+    :hidden:
+    :caption: Links
+
     PhpZone Docker <http://docs.phpzone.org/projects/phpzone-docker>
     PhpZone Shell <http://docs.phpzone.org/projects/phpzone-shell>
+
 
 PhpZone is a generic tool for the easy creation of `YAML`_ configured console applications. Its primary purpose is to
 provide a centralized automation tool for developers to simplify development workflow. **Basically it is a wrapper
