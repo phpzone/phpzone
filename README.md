@@ -51,4 +51,4 @@ For more details visit [PhpZone documentation].
 [YAML]: http://symfony.com/doc/current/components/yaml/yaml_format.html
 [Symfony components]: http://symfony.com/components
 [PhpZone Shell]: https://github.com/phpzone/shell
-[PhpZone documentation]: http://www.phpzone.org
+[PhpZone documentation]: http://docs.phpzone.org

@@ -10,7 +10,7 @@ of every developer. Since now not all developers need to have a knowledge about 
 understand what is running. It is not only about the knowledge but also experienced developers can find an advantage
 in keeping ready-made commands.
 
-`More details ... <http://www.phpzone.org/projects/phpzone-docker>`_
+`More details ... <http://docs.phpzone.org/projects/phpzone-docker>`_
 
 PhpZone Shell
 -------------
@@ -18,6 +18,6 @@ PhpZone Shell
 A command/script builder configured by `YAML`_. Its primary purpose is to
 provide an easy way to define multiple scripts used in daily workflow of every developer.
 
-`More details ... <http://www.phpzone.org/projects/phpzone-shell>`_
+`More details ... <http://docs.phpzone.org/projects/phpzone-shell>`_
 
 .. _YAML: http://symfony.com/doc/current/components/yaml/yaml_format.html

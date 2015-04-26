@@ -8,8 +8,8 @@ PhpZone
     basic-commands
     official-extensions
     creating-an-extension
-    PhpZone Docker <http://www.phpzone.org/projects/phpzone-docker>
-    PhpZone Shell <http://www.phpzone.org/projects/phpzone-shell>
+    PhpZone Docker <http://docs.phpzone.org/projects/phpzone-docker>
+    PhpZone Shell <http://docs.phpzone.org/projects/phpzone-shell>
 
 PhpZone is a generic tool for the easy creation of `YAML`_ configured console applications. Its primary purpose is to
 provide a centralized automation tool for developers to simplify development workflow. **Basically it is a wrapper
