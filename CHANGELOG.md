@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
+
+## [0.2.0-beta] - 2015-04-29
 ### Added
 - Command for automatic initialization of the config file called by the `--init` option.
 - Shell environment activated by the `--shell` option.
@@ -26,7 +28,8 @@ the `extensions:` definition.
 - Implementation of [Symfony DependencyInjection].
 - CLI application based on [Symfony Console].
 
-[unreleased]: https://github.com/phpzone/phpzone/compare/0.1.0...HEAD
+[unreleased]: https://github.com/phpzone/phpzone/compare/0.2.0-beta...HEAD
+[0.2.0-beta]: https://github.com/phpzone/phpzone/compare/0.1.0...0.2.0-beta
 
 [Symfony Event Dispatcher]: http://symfony.com/doc/current/components/event_dispatcher/index.html
 [Symfony Debug]: http://symfony.com/doc/current/components/debug/index.html

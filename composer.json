@@ -47,5 +47,14 @@
 
     "config": {
         "bin-dir": "bin/"
+    },
+
+    "suggest": {
+        "phpzone/shell": "A command/script builder configured by YAML, based on PhpZone"
+    },
+
+    "conflict": {
+        "phpzone/shell":  "0.1.*",
+        "phpzone/docker": "0.1.*"
     }
 }
